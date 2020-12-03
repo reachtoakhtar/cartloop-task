@@ -17,8 +17,8 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-APP_URL = config("APP_URL", "")
 
+AUTH_USER_MODEL = 'custom_user.CustomUser'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_filters',
     'corsheaders',
+    'custom_user',
     'chat',
 ]
 
@@ -242,6 +243,6 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_RESULT_EXPIRES = 1209600
 
 try:
-    from conf.settings_local import *
+    from api.settings_local import *
 except ImportError:
     pass
