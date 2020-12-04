@@ -1,0 +1,9 @@
+[
+  {
+    "model": "chat.conversation",
+    "pk": 1,
+    "fields": {
+      "store": 1
+    }
+  }
+]

@@ -1,0 +1,29 @@
+[
+  {
+    "model": "chat.store",
+    "pk": 1,
+    "fields": {
+      "name": "XYZ",
+      "address": "",
+      "timezone": "Asia/Kolkata"
+    }
+  },
+  {
+    "model": "chat.store",
+    "pk": 2,
+    "fields": {
+      "name": "ABC",
+      "address": "",
+      "timezone": "Europe/Berlin"
+    }
+  },
+  {
+    "model": "chat.store",
+    "pk": 3,
+    "fields": {
+      "name": "MNO",
+      "address": "",
+      "timezone": "America/Chicago"
+    }
+  }
+]

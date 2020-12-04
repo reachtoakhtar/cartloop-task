@@ -9,6 +9,10 @@ from custom_user.managers import CustomUserManager
 class CLGroup(models.Model):
     name = models.CharField(max_length=64)
     description = models.CharField(max_length=254, blank=True, null=True)
+    
+    class Meta:
+        verbose_name = "Group"
+        verbose_name_plural = "Groups"
 
 
 class CustomUser(AbstractUser):

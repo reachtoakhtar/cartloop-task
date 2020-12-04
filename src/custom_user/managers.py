@@ -17,6 +17,13 @@ class CustomUserManager(DjangoUserManager):
         )
         return self.create(email, **kwargs)
 
+    def create_staff(self, email, **kwargs):
+        kwargs.update(
+            is_staff=True,
+            is_superuser=False,
+        )
+        return self.create(email, **kwargs)
+    
     def create_superuser(self, email, **kwargs):
         kwargs.update(email=email, is_staff=True, username=email)
         kwargs.setdefault('is_active', True)

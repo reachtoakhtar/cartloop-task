@@ -1,3 +1,4 @@
+import pytz
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -8,6 +9,9 @@ UserModel = get_user_model()
 class Store(models.Model):
     name = models.CharField(max_length=255)
     address = models.TextField()
+    
+    TIMEZONES = tuple(zip(pytz.all_timezones, pytz.all_timezones))
+    timezone = models.CharField(max_length=32, choices=TIMEZONES, default='UTC')
 
 
 class Chat(models.Model):
@@ -31,9 +35,9 @@ class Chat(models.Model):
 
 class Conversation(models.Model):
     conversationId = models.AutoField(primary_key=True)
-    store = models.ForeignKey(Store, on_delete=models.PROTECT)
-    clientId = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="client_convs")
-    operatorId = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="operator_convs")
+    store = models.ForeignKey(Store, on_delete=models.PROTECT, null=True)
+    clientId = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="client_convs", null=True)
+    operatorId = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="operator_convs", null=True)
 
 
 class Schedule(models.Model):

@@ -88,7 +88,7 @@ pgadmin-data/
 .vscode/
 
 # Static Files
-statcdn/
+static/
 deploy.sh
 dump.rdb
 .project
@@ -101,5 +101,5 @@ backend/dump.rdb
 
 # Application Environment
 docker-compose.override.yml
-local.py
+api/settings_local.py
 .env
