@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from chat.models import Chat, Conversation
+from chat.models import Chat, Conversation, Schedule
 
 
 @receiver(post_save, sender=Chat)
@@ -14,4 +14,10 @@ def postsave_chat(instance, **kwargs):
         conversation.client = instance.user
 
     conversation.save()
+    
+    Schedule.objects.create(
+        chat=instance,
+        client=conversation.client,
+        operator=conversation.operator)
+    
     return instance

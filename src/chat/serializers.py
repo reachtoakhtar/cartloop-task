@@ -11,7 +11,7 @@ from rest_framework.exceptions import ValidationError
 from chat.models import Chat, Conversation
 
 payload_re = re.compile(r"^[a-zA-Z0-9{}$%_\-\\/~@#^&*()!?.]+$")
-message = _("Payload must contain characters alphanumeric characters and the following special characters - {}$%_-\/~@#^&*()!?.")
+message = _("Payload must contain alphanumeric characters and only these special characters {}$%_-\/~@#^&*()!?.")
 validate_payload = RegexValidator(payload_re, message, status.HTTP_400_BAD_REQUEST)
 
 UserModel = get_user_model()
