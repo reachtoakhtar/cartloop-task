@@ -20,6 +20,8 @@ class Store(models.Model):
 class Conversation(models.Model):
     store = models.ForeignKey(Store, on_delete=models.PROTECT, null=True)
     dicountCode = models.CharField(max_length=8, blank=True, null=True)
+    client = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="client_convs", null=True)
+    operator = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="operator_convs", null=True)
 
 
 class Chat(models.Model):

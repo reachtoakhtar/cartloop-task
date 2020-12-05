@@ -3,7 +3,7 @@ __author__ = "akhtar"
 import re
 
 from django.contrib.auth import get_user_model
-from django.core.validators import EmailValidator, RegexValidator
+from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
@@ -40,7 +40,6 @@ class ChatCreateSerializer(serializers.ModelSerializer):
         if len(payload) > 300:
             raise ValidationError(_("Length of payload must be less than 300."))
         
-        # conversation = Conversation.objects.get(id=conversationId)
         attrs["conversation"] = Conversation.objects.get(pk=conversationId)
         attrs["user"] = UserModel.objects.get(pk=userId)
         attrs["payload"] = payload
@@ -48,20 +47,32 @@ class ChatCreateSerializer(serializers.ModelSerializer):
         attrs.pop("conversationId")
         attrs.pop("chat")
         return attrs
-
-    def create(self, validated_data):
-        return super().create(validated_data)
     
     
 class ChatSerializer(serializers.ModelSerializer):
     chatId = serializers.IntegerField(source="id")
+    payload = serializers.SerializerMethodField()
     userId = serializers.IntegerField(source="user.id")
     
     class Meta:
         model = Chat
         fields = ("chatId", "payload", "userId", "utcdate", "status")
 
-
+    def get_payload(self, value):
+        payload = value.payload
+        if value.conversation.client is not None:
+            payload = payload.replace("{{username}}", value.conversation.client.username)
+            payload = payload.replace("{{ username }}", value.conversation.client.username)
+        if value.conversation.operator is not None:
+            payload = payload.replace("{{operator.Name}}", value.conversation.operator.first_name)
+            payload = payload.replace("{{ operator.Name }}", value.conversation.operator.first_name)
+        if value.conversation.dicountCode:
+            payload = payload.replace("{{discountCode}}", value.conversation.dicountCode)
+            payload = payload.replace("{{ discountCode }}", value.conversation.dicountCode)
+        
+        return payload
+    
+    
 class ConversationSerializer(serializers.ModelSerializer):
     conversationId = serializers.IntegerField(source="id")
     storeId = serializers.IntegerField(source="store.id")
@@ -76,29 +87,19 @@ class ConversationSerializer(serializers.ModelSerializer):
                   "operatorGroup", "chat")
     
     def get_operatorGroup(self, value):
-        user_ids = list(set(list(value.chats.values_list("user", flat=True))))
-        users = UserModel.objects.filter(id__in=user_ids, is_staff=True)
-        if users:
-            return users[0].groups.first().name
-    
-        return None
-    
+        if value.operator is not None:
+            groups = value.operator.groups.all()
+            if groups:
+                return groups[0].name
+
     def get_chat(self, value):
         chats = value.chats.all()
         return ChatSerializer(chats, many=True).data
     
     def get_operatorId(self, value):
-        user_ids = list(set(list(value.chats.values_list("user", flat=True))))
-        users = UserModel.objects.filter(id__in=user_ids, is_staff=True)
-        if users:
-            return users[0].id
-        
-        return None
+        if value.operator is not None:
+            return value.operator.id
 
     def get_clientId(self, value):
-        user_ids = list(set(list(value.chats.values_list("user", flat=True))))
-        users = UserModel.objects.filter(id__in=user_ids, is_staff=False)
-        if users:
-            return users[0].id
-        
-        return None
+        if value.client is not None:
+            return value.client.id
