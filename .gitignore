@@ -101,5 +101,5 @@ backend/dump.rdb
 
 # Application Environment
 docker-compose.override.yml
-api/settings_local.py
+src/api/settings_local.py
 .env
