@@ -6,6 +6,6 @@ from chat.views import ChatView, ConversationView
 
 
 urlpatterns = [
-    path('conversation/<str:pk>', ConversationView.as_view()),
+    path('conversation/<int:pk>', ConversationView.as_view()),
     path('chat/', ChatView.as_view()),
 ]

@@ -3,7 +3,8 @@
     "model": "chat.conversation",
     "pk": 1,
     "fields": {
-      "store": 1
+      "store": 1,
+      "dicountCode": "DIS123"
     }
   }
 ]

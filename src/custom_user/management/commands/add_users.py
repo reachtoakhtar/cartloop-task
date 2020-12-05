@@ -11,7 +11,18 @@ UserModel = get_user_model()
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        client1 = "client111222@gmail.com"
+        CLGroup.objects.create(name="sales")
+        CLGroup.objects.create(name="marketing")
+        
+        admin = "admin@gmail.com"
+        UserModel.objects.create_superuser(
+            email=admin,
+            username=admin,
+            password=admin,
+            timezone="Europe/Berlin",
+        )
+
+        client1 = "client1@gmail.com"
         UserModel.objects.create_user(
             email=client1,
             username=client1,
@@ -19,7 +30,7 @@ class Command(BaseCommand):
             timezone="Europe/Berlin",
         )
 
-        client2 = "client111223@gmail.com"
+        client2 = "client2@gmail.com"
         UserModel.objects.create_user(
             email=client2,
             username=client2,
@@ -27,7 +38,7 @@ class Command(BaseCommand):
             timezone="",
         )
         
-        operator1 = "operator111222@gmail.com"
+        operator1 = "operator1@gmail.com"
         user = UserModel.objects.create_staff(
             email=operator1,
             username=operator1,
@@ -38,7 +49,7 @@ class Command(BaseCommand):
         user.groups.set(group)
         user.save()
         
-        operator2 = "operator111223@gmail.com"
+        operator2 = "operator2@gmail.com"
         user = UserModel.objects.create_staff(
             email=operator2,
             username=operator2,

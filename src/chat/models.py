@@ -12,13 +12,21 @@ class Store(models.Model):
     
     TIMEZONES = tuple(zip(pytz.all_timezones, pytz.all_timezones))
     timezone = models.CharField(max_length=32, choices=TIMEZONES, default='UTC')
+    
+    def __str__(self):
+        return self.name
+
+
+class Conversation(models.Model):
+    store = models.ForeignKey(Store, on_delete=models.PROTECT, null=True)
+    dicountCode = models.CharField(max_length=8, blank=True, null=True)
 
 
 class Chat(models.Model):
-    chatId = models.AutoField(primary_key=True)
-    user = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="chats")
+    user = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="user_chats")
     payload = models.TextField()
-    utcdate = models.DateTimeField()
+    utcdate = models.DateTimeField(auto_now_add=True)
+    conversation = models.ForeignKey(Conversation, on_delete=models.PROTECT, related_name="chats")
     
     STATUS_DEFAULT = STATUS_NEW = "new"
     STATUS_SENT = "sent"
@@ -33,14 +41,7 @@ class Chat(models.Model):
     )
 
 
-class Conversation(models.Model):
-    conversationId = models.AutoField(primary_key=True)
-    store = models.ForeignKey(Store, on_delete=models.PROTECT, null=True)
-    clientId = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="client_convs", null=True)
-    operatorId = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="operator_convs", null=True)
-
-
 class Schedule(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.PROTECT, related_name="schedule")
-    clientId = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="sch_client")
-    operatorId = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="sch_operator")
+    client = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="sch_client")
+    operator = models.ForeignKey(UserModel, on_delete=models.PROTECT, related_name="sch_operator")
